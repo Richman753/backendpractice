@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      POSTGRES_DB: education_database
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+
+  liquibase:
+    image: liquibase/liquibase:latest
+    container_name: liquibase_container
+    environment:
+      LIQUIBASE_COMMAND_CHANGELOG_FILE: ../liquibase/changelog/db.changelog-master.xml
+      LIQUIBASE_COMMAND_URL: jdbc:postgresql://database:5432/education_database
+      LIQUIBASE_COMMAND_USERNAME: user
+      LIQUIBASE_COMMAND_PASSWORD: password
+    volumes:
+      - ./liquibase/changelog:/liquibase/changelog
+    depends_on:
+      - database
+    command: update

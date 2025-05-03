@@ -1,0 +1,11 @@
+create table USERS
+(
+name VARCHAR(50) NOT NULL,
+surname VARCHAR(50) NOT NULL,
+birth_date TIMESTAMP NOT NULL,
+inn VARCHAR(20) NOT NULL,
+snils VARCHAR(20) NOT NULL,
+pass_number VARCHAR(20) NOT NULL PRIMARY KEY,
+login VARCHAR(255) NOT NULL,
+password VARCHAR(255) NOT NULL
+);
