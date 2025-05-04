@@ -8,4 +8,8 @@
         <sqlFile path="schema/user_schema.sql"
                  relativeToChangelogFile="true"/>
     </changeSet>
+    <changeSet id="99" author="admin">
+        <sqlFile path="schema/data_schema.sql"
+                 relativeToChangelogFile="true"/>
+    </changeSet>
 </databaseChangeLog>
