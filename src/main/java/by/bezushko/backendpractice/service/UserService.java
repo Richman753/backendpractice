@@ -1,54 +1,56 @@
 package by.bezushko.backendpractice.service;
 
+import by.bezushko.backendpractice.dto.UserDto;
 import by.bezushko.backendpractice.entity.User;
 import by.bezushko.backendpractice.mapper.UserMapper;
 import by.bezushko.backendpractice.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
+    public List<UserDto> getUsers()
+    {
+        return userRepository.findAll().stream().map(userMapper::toDto).toList();
     }
 
-    public List<User> getUsers()
+    public UserDto getUserByPassNumber(String passNumber)
     {
-        return userRepository.findAll();
+        return userMapper.toDto(userRepository.getUserByPassNumber(passNumber));
     }
 
-    public User getUserByPassNumber(String passNumber)
+    public UserDto getUserById(UUID id)
     {
-        return userRepository.getUserByPassNumber(passNumber);
+        return userMapper.toDto(userRepository.getById(id));
     }
 
     @Transactional
-    public User createUser(User user)
+    public UserDto addUser(UserDto userDto)
     {
-        return userRepository.save(user);
+        return userMapper.toDto(userRepository.save(userMapper.toObject(userDto)));
     }
 
     @Transactional
-    public User deleteUser(String passNumber)
+    public void deleteUser(String passNumber)
     {
-        User user = userRepository.getUserByPassNumber(passNumber);
-        userRepository.deleteById(passNumber);
-        return user;
+        userRepository.deleteById(userRepository.getUserByPassNumber(passNumber).getUserId());
     }
 
     @Transactional
-    public User updateUser(String passNumber, User user)
+    public UserDto updateUser(String passNumber, UserDto userDto)
     {
         User actual = userRepository.getUserByPassNumber(passNumber);
-        userMapper.updateUser(user, actual);
+        userMapper.updateUser(userMapper.toObject(userDto), actual);
         actual.setPassNumber(passNumber);
-        return userRepository.save(actual);
+        return userMapper.toDto(userRepository.save(actual));
     }
 }

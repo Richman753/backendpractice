@@ -3,49 +3,55 @@ package by.bezushko.backendpractice.controller;
 import by.bezushko.backendpractice.dto.UserDto;
 import by.bezushko.backendpractice.mapper.UserMapper;
 import by.bezushko.backendpractice.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(path = "/backend/user")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-    private final UserMapper userMapper;
-
-    public UserController(UserService userService, UserMapper userMapper) {
-        this.userService = userService;
-        this.userMapper = userMapper;
-    }
 
     @GetMapping("/get/all")
-    public List<UserDto> getUsers()
+    public ResponseEntity<?> getUsers()
     {
-        return userService.getUsers().stream().map(userMapper::toDto).toList();
+        return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
-    @GetMapping("/get/{passNumber}")
-    public UserDto getUserByPassNumber(@PathVariable String passNumber)
+    @GetMapping("/get/pass/{passNumber}")
+    public ResponseEntity<?> getUserByPassNumber(@PathVariable String passNumber)
     {
-        return userMapper.toDto(userService.getUserByPassNumber(passNumber));
+        return new ResponseEntity<>(userService.getUserByPassNumber(passNumber), HttpStatus.OK);
     }
 
-    @PostMapping("/create")
-    public UserDto createUser(@RequestBody UserDto userDto)
+    @GetMapping("/get/id/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable UUID id)
     {
-        return userMapper.toDto(userService.createUser(userMapper.toObject(userDto)));
+        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<?> addUser(@RequestBody UserDto userDto)
+    {
+        return new ResponseEntity<>(userService.addUser(userDto), HttpStatus.OK);
     }
 
     @PutMapping("/update/{passNumber}")
-    public UserDto updateUser(@RequestBody UserDto userDto, @PathVariable String passNumber) throws NoSuchFieldException {
-        return userMapper.toDto(userService.updateUser(passNumber, userMapper.toObject(userDto)));
+    public ResponseEntity<?> updateUser(@PathVariable String passNumber, @RequestBody UserDto userDto) throws NoSuchFieldException {
+        return new ResponseEntity<>(userService.updateUser(passNumber, userDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{passNumber}")
-    public UserDto deleteUser(@PathVariable String passNumber)
+    public ResponseEntity<?> deleteUser(@PathVariable String passNumber)
     {
-        return userMapper.toDto(userService.deleteUser(passNumber));
+        userService.deleteUser(passNumber);
+        return new ResponseEntity<>("Сущность удалена", HttpStatus.OK);
     }
 
 }

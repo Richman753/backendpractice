@@ -1,7 +1,10 @@
 package by.bezushko.backendpractice.service;
 
+import by.bezushko.backendpractice.dto.UserDto;
 import by.bezushko.backendpractice.entity.User;
 import by.bezushko.backendpractice.repository.UserRepository;
+import by.bezushko.backendpractice.service.config.TestConfiguration;
+import by.bezushko.backendpractice.service.factory.UserTestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,24 +21,8 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
-@Testcontainers
 @ActiveProfiles("test")
-class UserServiceTest {
-
-    @Container
-    public static PostgreSQLContainer<?> postgreSQLContainer =
-            new PostgreSQLContainer<>("postgres:latest")
-                    .withDatabaseName("testdb")
-                    .withUsername("testuser")
-                    .withPassword("testpass");
-
-    @DynamicPropertySource
-    static void overrideProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
-        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
-        registry.add("spring.jpa.hibernate.ddl-auto", () -> "update");
-    }
+class UserServiceTest extends TestConfiguration {
 
     @Autowired
     private UserService userService;
@@ -50,20 +37,12 @@ class UserServiceTest {
 
     @Test
     void testCreateUser () {
-        User user = new User();
-        user.setPassNumber("ABC123");
-        user.setName("Иван");
-        user.setSurname("Иванов");
-        user.setLogin("ivan.ivanov@example.com");
-        user.setPassword("securePassword123");
-        user.setSnils("12355552");
-        user.setInn("235dsg235");
-        user.setBirthDate(LocalDateTime.now());
+        UserDto userDto = UserTestFactory.createUserDto();
 
-        User created = userService.createUser(user);
+        UserDto created = userService.addUser(userDto);
 
         assertThat(created).isNotNull();
-        assertThat(created.getPassNumber()).isEqualTo("ABC123");
+        assertThat(created.passNumber()).isEqualTo("ABC123");
 
         User found = userRepository.getUserByPassNumber("ABC123");
         assertThat(found).isNotNull();
@@ -71,48 +50,44 @@ class UserServiceTest {
     }
 
     @Test
-    void testUpdateUser () {
-        User user = new User();
-        user.setPassNumber("DEF456");
-        user.setName("Пётр");
-        user.setSurname("Петров");
-        user.setLogin("ivan.ivanov@example.com");
-        user.setPassword("securePassword123");
-        user.setSnils("12355552");
-        user.setInn("235dsg235");
-        user.setBirthDate(LocalDateTime.now());
-
-        userService.createUser(user);
-
-        User updatedData = new User();
-        updatedData.setName("Алексей");
-        updatedData.setSurname("Сидоров");
-        User updatedUser  = userService.updateUser("DEF456", updatedData);
-
-        assertThat(updatedUser).isNotNull();
-        assertThat(updatedUser.getPassNumber()).isEqualTo("DEF456");
-        assertThat(updatedUser.getName()).isEqualTo("Алексей");
-        assertThat(updatedUser.getSurname()).isEqualTo("Сидоров");
+    void testGetUserByPassNumber() {
+        UserDto userDto = UserTestFactory.createUserDto();
+        userService.addUser (userDto);
+        UserDto found = userService.getUserByPassNumber("ABC123");
+        assertThat(found).isNotNull();
+        assertThat(found.passNumber()).isEqualTo("ABC123");
     }
 
     @Test
-    void testDeleteUser () {
-        User user = new User();
-        user.setPassNumber("GHI789");
-        user.setName("Сергей");
-        user.setSurname("Сергеев");
-        user.setLogin("ivan.ivanov@example.com");
-        user.setPassword("securePassword123");
-        user.setSnils("12355552");
-        user.setInn("235dsg235");
-        user.setBirthDate(LocalDateTime.now());
-
-        userService.createUser(user);
-
-        User deleted = userService.deleteUser ("GHI789");
-        assertThat(deleted).isNotNull();
-        assertThat(deleted.getPassNumber()).isEqualTo("GHI789");
-        User found = userRepository.getUserByPassNumber("GHI789");
+    void testDeleteUser() {
+        UserDto userDto = UserTestFactory.createUserDto();
+        userService.addUser (userDto);
+        userService.deleteUser ("ABC123");
+        User found = userRepository.getUserByPassNumber("ABC123");
         assertThat(found).isNull();
+    }
+
+    @Test
+    void testUpdateUser() {
+        UserDto userDto = UserTestFactory.createUserDto();
+        userService.addUser (userDto);
+        UserDto updateDto = new UserDto(
+                "Иван Updated",
+                "Иванов",
+                LocalDateTime.now(),
+                "235dsg235",
+                "12355552",
+                "ABC123",
+                "updated.ivanov@example.com",
+                "newPassword456"
+        );
+        UserDto updated = userService.updateUser ("ABC123", updateDto);
+        assertThat(updated).isNotNull();
+        assertThat(updated.name()).isEqualTo("Иван Updated");
+        assertThat(updated.login()).isEqualTo("updated.ivanov@example.com");
+
+        User found = userRepository.getUserByPassNumber("ABC123");
+        assertThat(found).isNotNull();
+        assertThat(found.getName()).isEqualTo("Иван Updated");
     }
 }

@@ -3,7 +3,7 @@ FROM maven:3.8.4-openjdk-17 as builder
 WORKDIR /usr/src/app
 
 COPY . /usr/src/app
-RUN mvn package
+RUN mvn clean install -Dmaven.test.skip
 
 FROM eclipse-temurin:17-jre-alpine
 
