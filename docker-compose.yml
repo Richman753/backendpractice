@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  database:
+    image: postgres:latest
+    container_name: postgres_container
+    environment:
+      POSTGRES_DB: education_database
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+
+  backendpractice:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - database

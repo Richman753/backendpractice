@@ -1,0 +1,19 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: backendpractice
+  datasource:
+    url: jdbc:postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}
+    driver-class-name: org.postgresql.Driver
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    initialization-mode: always
+  jpa:
+    show-sql: true
+    hibernate:
+      dialect: "org.hibernate.dialect.PostgreSQLDialect"
+      ddl-auto: validate
+  liquibase:
+    change-log: classpath:liquibase/changelog/db.changelog-master.xml
