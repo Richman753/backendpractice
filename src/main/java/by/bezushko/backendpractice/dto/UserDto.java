@@ -1,8 +1,5 @@
 package by.bezushko.backendpractice.dto;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
 
@@ -18,9 +15,11 @@ public record UserDto (
         LocalDateTime birthDate,
 
         @NotBlank(message = "ИНН обязателен для заполнения")
+        @Pattern(regexp = "[0-9]{12}]", message = "ИНН содержит 12 цифр")
         String inn,
 
         @NotBlank(message = "СНИЛС обязателен для заполнения")
+        @Pattern(regexp = "[0-9]{11}]", message = "СНИЛС содержит 11 цифр")
         String snils,
 
         @NotBlank(message = "Номер паспорта обязателен для заполнения") String passNumber,

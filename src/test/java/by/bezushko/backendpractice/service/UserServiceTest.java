@@ -23,6 +23,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 class UserServiceTest extends TestConfiguration {
+    private UserDto created;
 
     @Autowired
     private UserService userService;
@@ -33,17 +34,14 @@ class UserServiceTest extends TestConfiguration {
     @BeforeEach
     public void setUp() {
         userRepository.deleteAll();
+        created = UserTestFactory.createUserDto();
+        userService.addUser(created);
     }
 
     @Test
     void testCreateUser () {
-        UserDto userDto = UserTestFactory.createUserDto();
-
-        UserDto created = userService.addUser(userDto);
-
         assertThat(created).isNotNull();
         assertThat(created.passNumber()).isEqualTo("ABC123");
-
         User found = userRepository.getUserByPassNumber("ABC123");
         assertThat(found).isNotNull();
         assertThat(found.getName()).isEqualTo("Иван");
@@ -51,8 +49,6 @@ class UserServiceTest extends TestConfiguration {
 
     @Test
     void testGetUserByPassNumber() {
-        UserDto userDto = UserTestFactory.createUserDto();
-        userService.addUser (userDto);
         UserDto found = userService.getUserByPassNumber("ABC123");
         assertThat(found).isNotNull();
         assertThat(found.passNumber()).isEqualTo("ABC123");
@@ -60,8 +56,6 @@ class UserServiceTest extends TestConfiguration {
 
     @Test
     void testDeleteUser() {
-        UserDto userDto = UserTestFactory.createUserDto();
-        userService.addUser (userDto);
         userService.deleteUser ("ABC123");
         User found = userRepository.getUserByPassNumber("ABC123");
         assertThat(found).isNull();
@@ -69,8 +63,6 @@ class UserServiceTest extends TestConfiguration {
 
     @Test
     void testUpdateUser() {
-        UserDto userDto = UserTestFactory.createUserDto();
-        userService.addUser (userDto);
         UserDto updateDto = new UserDto(
                 "Иван Updated",
                 "Иванов",

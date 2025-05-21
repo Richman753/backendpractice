@@ -28,7 +28,7 @@ public class UserService {
         return userMapper.toDto(userRepository.getUserByPassNumber(passNumber));
     }
 
-    public UserDto getUserById(UUID id)
+    public UserDto getUserById(Long id)
     {
         return userMapper.toDto(userRepository.getById(id));
     }
@@ -42,7 +42,7 @@ public class UserService {
     @Transactional
     public void deleteUser(String passNumber)
     {
-        userRepository.deleteById(userRepository.getUserByPassNumber(passNumber).getUserId());
+        userRepository.deleteById(userRepository.getUserByPassNumber(passNumber).getId());
     }
 
     @Transactional

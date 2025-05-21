@@ -28,6 +28,15 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
+		<hibernate.version>6.6.0.CR1</hibernate.version>
+		<hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
+		<mapstruct.version>1.6.2</mapstruct.version>
+		<mapstruct.mapstruct-processor.version>1.6.2</mapstruct.mapstruct-processor.version>
+		<testcontainers.junit-jupiter.version>1.20.2</testcontainers.junit-jupiter.version>
+		<testcontainers.postgresql.version>1.20.0</testcontainers.postgresql.version>
+		<liquibase.version>4.29.2</liquibase.version>
+		<postgresql.version>42.7.4</postgresql.version>
+		<projectlombok.version>0.2.0</projectlombok.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -47,18 +56,18 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>6.6.0.CR1</version>
+			<version>${hibernate.version}</version>
 			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
-			<version>1.6.2</version>
+			<version>${mapstruct.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>8.0.1.Final</version>
+			<version>${hibernate.validator.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -68,7 +77,7 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.7.4</version>
+			<version>${postgresql.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -78,19 +87,19 @@
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
-			<version>1.20.2</version>
+			<version>${testcontainers.junit-jupiter.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>1.20.0</version>
+			<version>${testcontainers.postgresql.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
-			<version>4.29.2</version>
+			<version>${liquibase.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -108,12 +117,12 @@
 						<path>
 							<groupId>org.mapstruct</groupId>
 							<artifactId>mapstruct-processor</artifactId>
-							<version>1.6.2</version>
+							<version>${mapstruct.mapstruct-processor.version}</version>
 						</path>
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok-mapstruct-binding</artifactId>
-							<version>0.2.0</version>
+							<version>${projectlombok.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

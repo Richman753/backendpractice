@@ -22,10 +22,9 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue
-    @JdbcTypeCode(Types.CHAR)
-    @Column(name = "user_id")
-    private UUID userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "name")
     private String name;

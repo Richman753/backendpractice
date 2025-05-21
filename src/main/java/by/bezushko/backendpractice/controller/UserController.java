@@ -18,20 +18,20 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/get/all")
+    @GetMapping("/all")
     public ResponseEntity<?> getUsers()
     {
         return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
-    @GetMapping("/get/pass/{passNumber}")
+    @GetMapping("/pass/{passNumber}")
     public ResponseEntity<?> getUserByPassNumber(@PathVariable String passNumber)
     {
         return new ResponseEntity<>(userService.getUserByPassNumber(passNumber), HttpStatus.OK);
     }
 
-    @GetMapping("/get/id/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable UUID id)
+    @GetMapping("/id/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id)
     {
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
